@@ -4,4 +4,4 @@
 ### Integrantes
 - Adrian Ruiz
 - Gustavo Ortiz
-- Leonardo Velazquez
+- Leonardo Velázquez
