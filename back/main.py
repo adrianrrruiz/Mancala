@@ -1,11 +1,10 @@
+# Install: pip install "fastapi[standard]" 
+# Run: fastapi dev main.py
+
 from fastapi import FastAPI
 
+from controller.game_controller import router
+
 app = FastAPI()
+app.include_router(router)
 
-@app.get("/")
-async def read_root():
-    return {"message": "¡Hola, FastAPI!"}
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int, q: str = None):
-    return {"item_id": item_id, "q": q}
