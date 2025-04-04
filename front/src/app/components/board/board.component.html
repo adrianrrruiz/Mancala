@@ -1,0 +1,43 @@
+<div
+  class="grid grid-cols-8 grid-rows-2 bg-cover bg-center w-[90%] h-[32rem] rounded-3xl p-10 shadow-2xl relative mb-10 mx-auto flex justify-center gap-x-10 gap-y-8"
+  style="background-image: url('wood-texture3.jpg')"
+>
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/10 rounded-3xl"></div>
+
+  <!-- Tienda Jugador 2 -->
+  <div
+    class="row-[1/3] flex items-center justify-center bg-transparent border-8 border-amber-950/80 rounded-[4rem] w-[100%] h-[90%] self-center justify-self-center relative backdrop-blur-sm shadow-inner z-10"
+  >
+    <span class="text-5xl font-bold text-amber-950">{{ stores()[1] }}</span>
+    <div class="absolute -top-10 text-amber-950 font-semibold text-2xl">{{ player2 }}</div>
+  </div>
+
+  <!-- Casas Jugador 2 -->
+  <ng-container *ngFor="let pit of player2Pits(); let i = index">
+    <div
+      class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 hover:scale-105 hover:border-amber-700 z-10"
+      (click)="moveStones(i, 2)"
+    >
+      <span class="text-4xl font-bold text-amber-950">{{ pit }}</span>
+    </div>
+  </ng-container>
+
+  <!-- Casas Jugador 1 -->
+  <ng-container *ngFor="let pit of player1Pits(); let i = index">
+    <div
+      class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 hover:scale-105 hover:border-amber-700 z-10"
+      (click)="moveStones(i, 1)"
+    >
+      <span class="text-4xl font-bold text-amber-950">{{ pit }}</span>
+    </div>
+  </ng-container>
+
+  <!-- Tienda Jugador 1 -->
+  <div
+    class="row-[1/3] col-[8/9] flex items-center justify-center bg-transparent border-8 border-amber-950/80 rounded-[4rem] w-[100%] h-[90%] self-center justify-self-center relative backdrop-blur-sm shadow-inner z-10"
+  >
+    <span class="text-5xl font-bold text-amber-950">{{ stores()[0] }}</span>
+    <div class="absolute -top-10 text-amber-950 font-semibold text-2xl">{{ player1 }}</div>
+  </div>
+</div>

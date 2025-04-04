@@ -1,0 +1,38 @@
+<div
+  class="flex flex-col items-center min-h-screen bg-gradient-to-b from-amber-50 to-amber-100"
+>
+
+  <h1
+  id="title"
+  class="text-7xl font-bold text-amber-900 mb-4 transition-all hover:scale-105"
+  >
+  Mancala
+  </h1>
+
+  <div *ngIf="mode === 'vs-player'">
+    <app-board [player1]="player1" [player2]="player2"></app-board>
+  </div>
+
+  <div *ngIf="mode === 'vs-machine'">
+    <h2>Modo Jugador vs Máquina</h2>
+    
+  </div>
+
+  <div *ngIf="mode === 'machine-vs-machine'">
+    <h2>Modo Máquina vs Máquina</h2>
+    
+  </div>
+
+  
+  
+  <!-- Añadir botones de jugar y reiniciar -->
+  <div class="flex space-x-4 atma-font">
+   
+    <button
+      class="bg-amber-900 text-2xl text-white px-4 py-2 rounded-lg shadow-md hover:bg-amber-800 transition-colors"
+      (click)="reset()"
+    >
+      Reiniciar
+    </button>
+  </div>
+</div>
