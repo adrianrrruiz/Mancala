@@ -1,14 +1,22 @@
 from fastapi import APIRouter
 from service.game_service import GameService
+from entity.game_start_request import GameStartRequest
+
 
 router = APIRouter(
   prefix="/game"
 )
 game_service = GameService()
 
+'''
 @router.get("/start")
 async def start_game():
     game = game_service.start_game("Adrian", "Leonardo", 1)
+    return game.dict() 
+'''
+@router.post("/start")
+async def start_game(request: GameStartRequest):
+    game = game_service.start_game(request.player1, request.player2, request.mode)
     return game.dict() # .dict() es por Pydantic
 
 @router.get("/get-game")

@@ -9,8 +9,6 @@ export const routes: Routes = [
     { path: 'vs-player', component: PlayerFormComponent, data: { mode: 'vs-player' } },
     { path: 'vs-machine', component: PlayerFormComponent, data: { mode: 'vs-machine' } },
     { path: 'machine-vs-machine', component: PlayerFormComponent, data: { mode: 'machine-vs-machine' } },
-    { path: 'game/:player1/:player2', component: GameComponent },
-    { path: 'game/:player1', component: GameComponent },
     { path: 'game', component: GameComponent },
     { path: '**', redirectTo: '' }, // Redirección si la ruta no existe
 ];
