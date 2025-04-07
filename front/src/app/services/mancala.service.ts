@@ -26,7 +26,14 @@ export class MancalaService {
     return this.http.post<Board>(`${this.apiUrl}/start`, body);
   }
 
-  getBoardState(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/board`);
+
+  move(row: number, col: number, player: number): Observable<Board> {
+    return this.http.get<Board>(`${this.apiUrl}/movement?row=${row}&col=${col}&player=${player}`);
   }
+
+  getBoardState(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/get-game`);
+  }
+
+
 }

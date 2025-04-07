@@ -23,6 +23,7 @@ async def start_game(request: GameStartRequest):
 async def get_game():
     game = game_service.get_game()
     return game.dict() if game else {"message": "No hay juego activo"} # .dict() es por Pydantic
+
   
 @router.get("/restart")
 async def restart_game():
@@ -30,6 +31,6 @@ async def restart_game():
     return "Juego reiniciado"
 
 @router.get("/movement")
-async def make_movement():
-    board = game_service.make_movement(1, 3, 1) # Prueba: Fila 2, Columna 4 y Jugador 1
-    return board.dict() if board else {"No se pudo realizar el movimiento"} 
+async def make_movement(row: int, col: int, player: int):
+    board = game_service.make_movement(row, col, player)
+    return board.dict() if board else {"message": "No se pudo realizar el movimiento"}
