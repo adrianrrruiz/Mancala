@@ -33,4 +33,14 @@ async def restart_game():
 @router.get("/movement")
 async def make_movement(row: int, col: int, player: int):
     board = game_service.make_movement(row, col, player)
+
+    if board == "Empate": 
+        return {"message": "Empate"}
+    else:
+        game = game_service.get_game()
+        if board == game.player1.name:
+            return {"message": "Gano el jugador 1: {}".format(game.player1.name)}
+        elif board == game.player2.name:
+            return {"message": "Gano el jugador 2: {}".format(game.player2.name)}
+    
     return board.dict() if board else {"message": "No se pudo realizar el movimiento"}

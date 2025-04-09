@@ -35,6 +35,7 @@ export class BoardComponent {
       this.player1Pits.set([...this.board.pils[1]]); // Clonar para evitar mutaciones inesperadas
       this.player2Pits.set([...this.board.pils[0]]);
       this.stores.set([this.board.store1, this.board.store2]);
+      this.pTurn = this.board.turn;
     } else {
       console.warn('Board no tiene la estructura esperada');
     }
@@ -65,9 +66,11 @@ export class BoardComponent {
             this.player1Pits.set([...updBoard.pils[1]]);
             this.player2Pits.set([...updBoard.pils[0]]);
             this.stores.set([updBoard.store1, updBoard.store2]);
+            this.pTurn = updBoard.turn;
+            this.movePit = this.pTurn === 1 ? 1 : 0;
           }
         })
-        this.changeTurn();
+        //this.changeTurn();
       }
   }
 
