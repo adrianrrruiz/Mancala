@@ -1,9 +1,16 @@
-<div
+<div 
   class="grid grid-cols-8 grid-rows-2 bg-cover bg-center w-[90%] h-[32rem] rounded-3xl p-10 shadow-2xl relative mb-10 mx-auto flex justify-center gap-x-10 gap-y-8"
   style="background-image: url('wood-texture3.jpg')"
 >
   <!-- Overlay -->
   <div class="absolute inset-0 bg-black/10 rounded-3xl"></div>
+
+  <!-- Indicador de turno -->
+  <div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+    <div class="bg-amber-900/90 text-white px-6 py-2 rounded-full text-xl font-semibold shadow-lg">
+      Turno: {{ pTurn === 1 ? player1 : player2 }}
+    </div>
+  </div>
 
   <!-- Tienda Jugador 2 -->
   <div

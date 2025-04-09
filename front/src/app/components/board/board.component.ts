@@ -54,7 +54,9 @@ export class BoardComponent {
   
   moveStones(column: number, fila: number): void {
       // Implementa la lógica de movimiento aquí.
-      if(fila == this.pTurn){
+      const pits = fila === 1 ? this.player1Pits() : this.player2Pits();
+
+      if(fila === this.pTurn &&  pits[column] > 0){
         
         console.log(`Jugador ${this.pTurn} movió las piedras de la casilla ${column}`);
         this.gameService.move(this.movePit, column, this.pTurn).subscribe({
