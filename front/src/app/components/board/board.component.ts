@@ -54,25 +54,34 @@ export class BoardComponent {
   
   
   moveStones(column: number, fila: number): void {
-      // Implementa la lógica de movimiento aquí.
-      const pits = fila === 1 ? this.player1Pits() : this.player2Pits();
-
-      if(fila === this.pTurn &&  pits[column] > 0){
-        
-        console.log(`Jugador ${this.pTurn} movió las piedras de la casilla ${column}`);
-        this.gameService.move(this.movePit, column, this.pTurn).subscribe({
-          next: (updBoard) => {
-            this.board = structuredClone(updBoard);
-            this.player1Pits.set([...updBoard.pils[1]]);
-            this.player2Pits.set([...updBoard.pils[0]]);
-            this.stores.set([updBoard.store1, updBoard.store2]);
-            this.pTurn = updBoard.turn;
-            this.movePit = this.pTurn === 1 ? 1 : 0;
+    const pits = fila === 1 ? this.player1Pits() : this.player2Pits();
+  
+    if (fila === this.pTurn && pits[column] > 0) {
+      console.log(`Jugador ${this.pTurn} movió las piedras de la casilla ${column}`);
+      
+      this.gameService.move(this.movePit, column, this.pTurn).subscribe({
+        next: (resp) => {
+          if ('message' in resp) {
+            alert(resp.message); // o mostrarlo con un snackbar, modal, etc.
+            return;
           }
-        })
-        //this.changeTurn();
-      }
+  
+          
+          this.board = structuredClone(resp);
+          this.player1Pits.set([...resp.pils[1]]);
+          this.player2Pits.set([...resp.pils[0]]);
+          this.stores.set([resp.store1, resp.store2]);
+          this.pTurn = resp.turn;
+          this.movePit = this.pTurn === 1 ? 1 : 0;
+        },
+        error: (err) => {
+          console.error('Error al mover piedras:', err);
+          alert('Hubo un error al procesar el movimiento.');
+        }
+      });
+    }
   }
+  
 
   //updateBoard
 

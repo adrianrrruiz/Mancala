@@ -26,10 +26,18 @@ export class MancalaService {
     return this.http.post<Board>(`${this.apiUrl}/start`, body);
   }
 
-
+  /*
   move(row: number, col: number, player: number): Observable<Board> {
     return this.http.get<Board>(`${this.apiUrl}/movement?row=${row}&col=${col}&player=${player}`);
   }
+  */
+  
+  move(row: number, col: number, player: number): Observable<Board | { message: string }> {
+    return this.http.get<Board | { message: string }>(
+      `${this.apiUrl}/movement?row=${row}&col=${col}&player=${player}`
+    );
+  }
+  
 
   getBoardState(): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-game`);
