@@ -10,7 +10,7 @@
   </h1>
 
   <div *ngIf="mode === 'vs-player'">
-    <app-board [board]="board ?? { store1: 0, store2: 0, pils: [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]] }"
+    <app-board [board]="board ?? { store1: 0, store2: 0, pils: [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]], turn: 1 }"
            [player1]="player1 ?? 'Player 1'"
            [player2]="player2 ?? 'Player 2'">
     </app-board>
