@@ -11,8 +11,6 @@ class GameService:
           cls._instance = super(GameService, cls).__new__(cls)
           cls._instance.game = None
         return cls._instance
-    
-    
 
     def start_game(self, name_p1, name_p2, game_type) -> Board:
         p1 = Player(id=1, name=name_p1)
@@ -95,9 +93,8 @@ class GameService:
           self.capture_rule(*last_pos, turn)
 
       # Verificar fin del juego
-      winner = self.check_end_game()
-      if winner:
-          return winner
+      if self.check_end_game():
+          return self.game.board
 
       # Verificar turno extra
       if last_pos == ("store", turn):
@@ -107,8 +104,6 @@ class GameService:
 
       board.turn = self.game.turn
       return board
-
-    
     
     def _advance_position(self, row, col, turn):
       if row == 1:
@@ -122,8 +117,6 @@ class GameService:
               return ("store", 2) if turn == 2 else (1, 0)
           return (0, col)
 
-
-    
     def capture_rule(self, row, col, turn):
       # Verifica si cayó en su lado y la casilla tenía solo 1 semilla (es decir, estaba vacía antes de caer ahí la última)
       if turn == 1 and row == 1 and self.game.board.pils[row][col] == 1:
@@ -142,35 +135,27 @@ class GameService:
               self.game.board.pils[0][col] = 0
     
 
-    def check_end_game(self):
-      board = self.game.board
-
-      # Sumar semillas restantes si un lado está vacío
-      side1_empty = all(p == 0 for p in board.pils[1])
-      side2_empty = all(p == 0 for p in board.pils[0])
+    def check_end_game(self) -> bool:
+      # Sumar semillas restantes para ver si algún lado está vacío
+      side1_empty = all(p == 0 for p in self.game.board.pils[0]) # Arriba
+      side2_empty = all(p == 0 for p in self.game.board.pils[1]) # Abajo
 
       if side1_empty or side2_empty:
-          # Si lado 1 vacío → sumar lado 2 al store2
-          if not side2_empty:
-              self.game.board.store2 += sum(board.pils[1])
-              board.pils[1] = [0] * 6
+          # Si arriba vacío → sumar todo lo de abajo al store1
+          if side1_empty:
+              self.game.board.store1 += sum(self.game.board.pils[1])
+              self.game.board.pils[1] = [0] * 6
 
-          # Si lado 2 vacío → sumar lado 1 al store1
-          if not side1_empty:
-              self.game.board.store1 += sum(board.pils[0])
-              board.pils[0] = [0] * 6
+          # Si abajo vacío → sumar todo lo de arriba al store2
+          if side2_empty:
+              self.game.board.store2 += sum(self.game.board.pils[0])
+              self.game.board.pils[0] = [0] * 6
 
           # Finaliza el juego
           self.game.playing = False
-
-          # Determinar ganador 
-          if board.store1 > board.store2:
-            return self.game.player1.name
-          elif board.store2 > board.store1:
-              return self.game.player2.name
-          else:
-              return "Empate"
-      return None
+            
+          return True
+      return False
 
 
               
