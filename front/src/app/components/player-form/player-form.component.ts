@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component , inject} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
 import { Board } from '../../models/board';
@@ -9,7 +9,7 @@ import { MancalaService } from '../../services/mancala.service';
 
 @Component({
   selector: 'app-player-form',
-  imports: [ CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HeaderComponent],
   templateUrl: './player-form.component.html',
   styleUrl: './player-form.component.css'
 })
@@ -20,10 +20,8 @@ export class PlayerFormComponent {
   private router = inject(Router);
 
 
-  constructor(private gameService: MancalaService) {}
+  constructor(private gameService: MancalaService) { }
 
-  
-  
   iniciarJuego() {
     if (this.mode === 'vs-player') {
       this.gameService.startGame(this.player1, this.player2, 1).subscribe({
@@ -41,7 +39,7 @@ export class PlayerFormComponent {
           console.error('Error al iniciar juego', err);
         }
       });
-      
+
     } else if (this.mode === 'vs-machine') {
       this.router.navigate(['/game', this.player1]);
     } else if (this.mode === 'machine-vs-machine') {

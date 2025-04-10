@@ -1,8 +1,16 @@
 <div
-  class="flex flex-col items-center min-h-screen bg-gradient-to-b from-amber-50 to-amber-100"
+  class="font-display flex flex-col items-center min-h-screen bg-gradient-to-b from-amber-50 to-amber-100"
 >
   <!-- Header Section -->
-  <app-header></app-header>
+  <app-header>
+    <p id="authors" class="text-center text-2xl text-amber-800 space-y-1">
+      <span class="font-semibold">Created by:</span>
+      <span class="block hover:text-amber-600 transition-colors">Adrian Ruiz</span>
+      <span class="block hover:text-amber-600 transition-colors">Gustavo Ortiz</span>
+      <span class="block hover:text-amber-600 transition-colors">Leonardo Velazquez</span>
+      <span class="block hover:text-amber-600 transition-colors">Tomas Martinez</span>
+    </p>
+  </app-header>
 
   <!-- Botones-->
   <div class="grid grid-cols-2 gap-4 atma-font mt-6">
@@ -10,13 +18,13 @@
       class="bg-amber-900 text-2xl text-white px-6 py-3 rounded-lg shadow-md hover:bg-amber-800 transition-colors"
       (click)="player_vs_player()"
     >
-      Jugador vs Jugador
+      👤 Jugador vs Jugador 👤
     </button>
     <button
       class="bg-amber-900 text-2xl text-white px-6 py-3 rounded-lg shadow-md hover:bg-amber-800 transition-colors"
       (click)="player_vs_machine()"
     >
-      Maquina vs Jugador
+      🤖 Máquina vs Jugador 👤
     </button>
 
     <div class="col-span-2 flex justify-center">
@@ -24,7 +32,7 @@
         class="bg-amber-900 text-2xl text-white px-6 py-3 rounded-lg shadow-md hover:bg-amber-800 transition-colors"
         (click)="machine_vs_machine()"
       >
-        Maquina vs Maquina
+      🤖 Máquina vs Máquina 🤖
       </button>
     </div>
   </div>

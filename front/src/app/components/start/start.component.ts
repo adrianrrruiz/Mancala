@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { HeaderComponent } from '../header/header.component'; 
+import { HeaderComponent } from '../header/header.component';
 import { Router } from '@angular/router';
 
 @Component({

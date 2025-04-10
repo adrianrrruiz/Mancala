@@ -4,16 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MancalaService } from '../../services/mancala.service';
 import { Board } from '../../models/board';
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-game',
-  imports: [BoardComponent, CommonModule],
+  imports: [BoardComponent, CommonModule, HeaderComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
 export class GameComponent {
 
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   player1: string | null = null;
@@ -21,15 +21,13 @@ export class GameComponent {
 
   board: Board | null = null;
 
-  constructor(private gameService: MancalaService) {}
+  constructor(private gameService: MancalaService) { }
 
   ngOnInit() {
     this.board = this.gameService.board;
     this.player1 = this.gameService.player1;
     this.player2 = this.gameService.player2;
-    
   }
-
 
   get mode(): 'vs-player' | 'vs-machine' | 'machine-vs-machine' {
     if (this.player1 && this.player2) return 'vs-player';

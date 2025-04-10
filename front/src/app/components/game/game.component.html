@@ -1,13 +1,8 @@
 <div
-  class="flex flex-col items-center min-h-screen bg-gradient-to-b from-amber-50 to-amber-100"
+  class="font-display flex flex-col items-center min-h-screen bg-gradient-to-b from-amber-50 to-amber-100"
 >
 
-  <h1
-  id="title"
-  class="text-7xl font-bold text-amber-900 mb-4 transition-all hover:scale-105"
-  >
-  Mancala
-  </h1>
+  <app-header></app-header>
 
   <div *ngIf="mode === 'vs-player'">
     <app-board [board]="board ?? { store1: 0, store2: 0, pils: [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]], turn: 1 }"
@@ -27,8 +22,6 @@
     
   </div>
 
-  
-  
   <!-- Añadir botones de jugar y reiniciar -->
   <div class="flex space-x-4 atma-font">
    

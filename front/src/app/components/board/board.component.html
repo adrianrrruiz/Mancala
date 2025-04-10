@@ -7,7 +7,13 @@
 
   <!-- Indicador de turno -->
   <div class="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
-    <div class="bg-amber-900/90 text-white px-6 py-2 rounded-full text-xl font-semibold shadow-lg">
+    <div 
+      class="text-white px-6 py-2 rounded-full text-xl font-semibold shadow-lg"
+      [ngClass]="{
+        'bg-red-900': pTurn === 1,
+        'bg-blue-900': pTurn !== 1
+      }"
+    >
       Turno: {{ pTurn === 1 ? player1 : player2 }}
     </div>
   </div>
@@ -16,27 +22,45 @@
   <div
     class="row-[1/3] flex items-center justify-center bg-transparent border-8 border-amber-950/80 rounded-[4rem] w-[100%] h-[90%] self-center justify-self-center relative backdrop-blur-sm shadow-inner z-10"
   >
-    <span class="text-5xl font-bold text-amber-950">{{ stores()[1] }}</span>
-    <div class="absolute -top-10 text-amber-950 font-semibold text-2xl">{{ player2 }}</div>
+    <span class="text-5xl font-bold text-blue-900">{{ stores()[1] }}</span>
+    <div class="absolute -top-10 text-blue-900 font-semibold text-2xl">{{ player2 }}</div>
   </div>
 
   <!-- Casas Jugador 2 -->
   <ng-container *ngFor="let pit of player2Pits(); let i = index">
     <div
-      class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 hover:scale-105 hover:border-amber-700 z-10"
+      class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 backdrop-blur-sm z-10"
+      [ngClass]="{'hover:scale-105 hover:border-blue-800': pTurn !== 1}"
       (click)="moveStones(i, 2)"
     >
-      <span class="text-4xl font-bold text-amber-950">{{ pit }}</span>
+    <span 
+      class="text-4xl font-bold"
+      [ngClass]="{
+        'text-amber-950': pTurn === 1,
+        'text-blue-900': pTurn !== 1
+      }"
+    >
+      {{ pit }}
+    </span>
     </div>
   </ng-container>
 
   <!-- Casas Jugador 1 -->
   <ng-container *ngFor="let pit of player1Pits(); let i = index">
     <div
-      class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 hover:scale-105 hover:border-amber-700 z-10"
+      class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 backdrop-blur-sm z-10"
+      [ngClass]="{'hover:scale-105 hover:border-red-800': pTurn === 1}"
       (click)="moveStones(i, 1)"
     >
-      <span class="text-4xl font-bold text-amber-950">{{ pit }}</span>
+      <span 
+        class="text-4xl font-bold"
+        [ngClass]="{
+          'text-amber-950': pTurn !== 1,
+          'text-red-900': pTurn === 1
+        }"
+      >
+        {{ pit }}
+      </span>
     </div>
   </ng-container>
 
@@ -44,7 +68,12 @@
   <div
     class="row-[1/3] col-[8/9] flex items-center justify-center bg-transparent border-8 border-amber-950/80 rounded-[4rem] w-[100%] h-[90%] self-center justify-self-center relative backdrop-blur-sm shadow-inner z-10"
   >
-    <span class="text-5xl font-bold text-amber-950">{{ stores()[0] }}</span>
-    <div class="absolute -top-10 text-amber-950 font-semibold text-2xl">{{ player1 }}</div>
+    <span class="text-5xl font-bold text-red-900">{{ stores()[0] }}</span>
+    <div class="absolute -top-10 text-red-900 font-semibold text-2xl">{{ player1 }}</div>
   </div>
 </div>
+
+<p-dialog class="bg-white" [header]="winner" (onHide)="closeModal()" [(visible)]="winnerModal" [modal]="true" [draggable]="false" [resizable]="false">
+  <p class="text-xl">Puntos de  <span class="text-red-900 font-semibold">{{ player1 }}</span> :  {{ finalStore1 }}</p>
+  <p class="text-xl">Puntos de  <span class="text-blue-900 font-semibold">{{ player2 }}</span> :  {{ finalStore2 }}</p>
+</p-dialog>
