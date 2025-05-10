@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class MancalaService {
-  private apiUrl = environment.url + '/game';
+  private apiUrl = environment.apiUrl + '/game';
 
 
   constructor(private http: HttpClient) { }
