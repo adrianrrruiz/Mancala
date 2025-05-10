@@ -1,6 +1,3 @@
-# Install: pip install "fastapi[standard]" 
-# Run: fastapi dev main.py
-
 from fastapi import FastAPI
 
 from controller.game_controller import router
@@ -11,9 +8,9 @@ app = FastAPI()
 # Configura CORS aquí:
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],  # 👈 Cambia esto si usas otro frontend
+    allow_origins=["*"],  
     allow_credentials=True,
-    allow_methods=["*"],                      # 👈 Acepta todos los métodos (incluye OPTIONS)
+    allow_methods=["*"],                      
     allow_headers=["*"],
 )
 
