@@ -3,11 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Board } from '../models/board';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class MancalaService {
-  private apiUrl = 'http://localhost:8000/game';
+  private apiUrl = environment.url + '/game';
 
 
   constructor(private http: HttpClient) { }
