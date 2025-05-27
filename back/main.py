@@ -5,10 +5,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Configura CORS aquí:
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=[
+        "http://localhost:4200",
+        "https://mancala-one.vercel.app"
+    ],  
     allow_credentials=True,
     allow_methods=["*"],                      
     allow_headers=["*"],
