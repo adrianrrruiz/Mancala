@@ -16,7 +16,7 @@ export class StartComponent {
     this.router.navigate(['/vs-player']);
   }
   player_vs_machine(): void {
-    this.router.navigate(['']);
+    this.router.navigate(['/vs-machine']);
   }
   machine_vs_machine(): void {
     this.router.navigate(['']);

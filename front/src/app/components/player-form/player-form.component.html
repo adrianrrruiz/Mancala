@@ -5,63 +5,109 @@
 
   <div class="text-center text-4xl text-amber-800 space-y-1">
     <div *ngIf="mode === 'vs-player'">
-        <h2 class="block hover:text-amber-400 transition-colors atma-font">Modo Jugador vs Jugador</h2>
-        <!-- Formulario para dos jugadores -->
-        <form
-          autocomplete="off"
-          class="flex flex-col space-y-4 max-w-md mx-auto mt-8 p-6 bg-amber-50 rounded-xl shadow-lg"
-          (ngSubmit)="iniciarJuego()"
-          #playerForm="ngForm"
-        >
-          <h2 class="text-3xl text-center text-amber-900 font-bold atma-font">Nombres de los Jugadores</h2>
+      <h2 class="block hover:text-amber-400 transition-colors atma-font">
+        Modo Jugador vs Jugador
+      </h2>
+      <!-- Formulario para dos jugadores -->
+      <form
+        autocomplete="off"
+        class="flex flex-col space-y-4 max-w-md mx-auto mt-8 p-6 bg-amber-50 rounded-xl shadow-lg"
+        (ngSubmit)="iniciarJuego()"
+        #playerForm="ngForm"
+      >
+        <h2 class="text-3xl text-center text-amber-900 font-bold atma-font">
+          Nombres de los Jugadores
+        </h2>
 
-          <!-- Jugador 1 -->
-          <div>
-            <label class="block text-2xl text-amber-800 font-medium mb-1 atma-font" for="player1">Jugador 1</label>
-            <input
-              type="text"
-              id="player1"
-              name="player1"
-              [(ngModel)]="player1"
-              required
-              class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
-            />
-          </div>
-
-          <!-- Jugador 2 -->
-          <div>
-            <label class="block text-2xl text-amber-800 font-medium mb-1 atma-font" for="player2">Jugador 2</label>
-            <input
-              type="text"
-              id="player2"
-              name="player2"
-              [(ngModel)]="player2"
-              required
-              class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
-            />
-          </div>
-
-          <!-- Botón -->
-          <button
-            type="submit"
-            [disabled]="playerForm.invalid"
-            class="bg-amber-800 text-white py-2 px-4 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50"
+        <!-- Jugador 1 -->
+        <div>
+          <label
+            class="block text-2xl text-amber-800 font-medium mb-1 atma-font"
+            for="player1"
+            >Jugador 1</label
           >
-            Comenzar Juego
-          </button>
-        </form>
+          <input
+            type="text"
+            id="player1"
+            name="player1"
+            [(ngModel)]="player1"
+            required
+            class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
+          />
+        </div>
 
-      
-      </div>
-      
-      <div *ngIf="mode === 'vs-machine'">
-        <h2 class=" atma-font">Modo Jugador vs Maquina</h2>
-        <!-- Formulario para un jugador -->
-      </div>
-      
-      <div *ngIf="mode === 'machine_vs_machine'">
-        <h2 class="atma-font">Modo Maquina vs Maquina</h2>
-        <!-- No se pide nombres -->
-      </div>
+        <!-- Jugador 2 -->
+        <div>
+          <label
+            class="block text-2xl text-amber-800 font-medium mb-1 atma-font"
+            for="player2"
+            >Jugador 2</label
+          >
+          <input
+            type="text"
+            id="player2"
+            name="player2"
+            [(ngModel)]="player2"
+            required
+            class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
+          />
+        </div>
+
+        <!-- Botón -->
+        <button
+          type="submit"
+          [disabled]="playerForm.invalid"
+          class="bg-amber-800 text-white py-2 px-4 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50"
+        >
+          Comenzar Juego
+        </button>
+      </form>
+    </div>
+
+    <div *ngIf="mode === 'vs-machine'">
+      <h2 class="atma-font">Modo Jugador vs Maquina</h2>
+      <!-- Formulario para un jugador -->
+      <form
+        autocomplete="off"
+        class="flex flex-col space-y-4 max-w-md mx-auto mt-8 p-6 bg-amber-50 rounded-xl shadow-lg"
+        (ngSubmit)="iniciarJuego()"
+        #playerForm="ngForm"
+      >
+        <h2 class="text-3xl text-center text-amber-900 font-bold atma-font">
+          Nombre del Jugador
+        </h2>
+
+        <!-- Jugador 1 -->
+        <div>
+          <label
+            class="block text-2xl text-amber-800 font-medium mb-1 atma-font"
+            for="player1"
+            >Jugador 1</label
+          >
+          <input
+            type="text"
+            id="player1"
+            name="player1"
+            [(ngModel)]="player1"
+            required
+            class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
+          />
+        </div>
+
+        <!-- Botón -->
+        <button
+          type="submit"
+          [disabled]="playerForm.invalid"
+          class="bg-amber-800 text-white py-2 px-4 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50"
+        >
+          Comenzar Juego
+        </button>
+      </form>
+    </div>
+
+    <div *ngIf="mode === 'machine_vs_machine'">
+      <h2 class="atma-font">Modo Maquina vs Maquina</h2>
+      <!-- No se pide nombres -->
+    </div>
   </div>
 </div>
