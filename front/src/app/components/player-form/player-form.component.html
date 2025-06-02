@@ -8,7 +8,6 @@
       <h2 class="block hover:text-amber-400 transition-colors atma-font">
         Modo Jugador vs Jugador
       </h2>
-      <!-- Formulario para dos jugadores -->
       <form
         autocomplete="off"
         class="flex flex-col space-y-4 max-w-md mx-auto mt-8 p-6 bg-amber-50 rounded-xl shadow-lg"
@@ -65,8 +64,7 @@
     </div>
 
     <div *ngIf="mode === 'vs-machine'">
-      <h2 class="atma-font">Modo Jugador vs Maquina</h2>
-      <!-- Formulario para un jugador -->
+      <h2 class="atma-font">Modo Jugador vs Máquina</h2>
       <form
         autocomplete="off"
         class="flex flex-col space-y-4 max-w-md mx-auto mt-8 p-6 bg-amber-50 rounded-xl shadow-lg"
@@ -77,12 +75,12 @@
           Nombre del Jugador
         </h2>
 
-        <!-- Jugador 1 -->
+        <!-- Jugador-->
         <div>
           <label
             class="block text-2xl text-amber-800 font-medium mb-1 atma-font"
             for="player1"
-            >Jugador 1</label
+            >Jugador</label
           >
           <input
             type="text"
@@ -93,6 +91,25 @@
             class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
           />
         </div>
+
+        <!-- Máquina-->
+        <div>
+          <label
+            class="block text-2xl text-amber-800 font-medium mb-1 atma-font"
+            for="player2"
+            >Máquina</label
+          >
+          <select
+            id="player2"
+            name="player2"
+            [(ngModel)]="player2"
+            required
+            class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
+          >
+            <option value="greedy">Greedy</option>
+            <option value="minimax">Minimax</option>
+          </select>
+        </div>  
 
         <!-- Botón -->
         <button
@@ -105,9 +122,67 @@
       </form>
     </div>
 
-    <div *ngIf="mode === 'machine_vs_machine'">
-      <h2 class="atma-font">Modo Maquina vs Maquina</h2>
-      <!-- No se pide nombres -->
+    <div *ngIf="mode === 'machine-vs-machine'">
+      <h2 class="block hover:text-amber-400 transition-colors atma-font">
+        Modo Máquina vs Máquina
+      </h2>
+      <form
+        autocomplete="off"
+        class="flex flex-col space-y-4 max-w-md mx-auto mt-8 p-6 bg-amber-50 rounded-xl shadow-lg"
+        (ngSubmit)="iniciarJuego()"
+        #playerForm="ngForm"
+      >
+        <h2 class="text-3xl text-center text-amber-900 font-bold atma-font">
+          Tipos de las Máquinas
+        </h2>
+
+        <!-- Máquina 1 -->
+        <div>
+          <label
+            class="block text-2xl text-amber-800 font-medium mb-1 atma-font"
+            for="player1"
+            >Máquina 1</label
+          >
+          <select
+            id="player1"
+            name="player1"
+            [(ngModel)]="player1"
+            required
+            class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
+          >
+            <option value="greedy">Greedy</option>
+            <option value="minimax">Minimax</option>
+          </select>
+        </div>
+
+        <!-- Máquina 2 -->
+        <div>
+          <label
+            class="block text-2xl text-amber-800 font-medium mb-1 atma-font"
+            for="player2"
+            >Máquina 2</label
+          >
+          <select
+            id="player2"
+            name="player2"
+            [(ngModel)]="player2"
+            required
+            class="text-2xl w-full p-2 border border-amber-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-600"
+          >
+            <option value="greedy">Greedy</option>
+            <option value="minimax">Minimax</option>
+          </select>
+        </div>
+
+        <!-- Botón -->
+        <button
+          type="submit"
+          [disabled]="playerForm.invalid"
+          class="bg-amber-800 text-white py-2 px-4 rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50"
+        >
+          Comenzar Juego
+        </button>
+      </form>
     </div>
   </div>
 </div>

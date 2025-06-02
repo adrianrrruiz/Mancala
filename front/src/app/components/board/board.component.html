@@ -30,7 +30,10 @@
   <ng-container *ngFor="let pit of player2Pits(); let i = index">
     <div
       class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 backdrop-blur-sm z-10"
-      [ngClass]="{'hover:scale-105 hover:border-blue-800': pTurn !== 1}"
+      [ngClass]="{
+        'hover:scale-105 hover:border-blue-800': pTurn !== 1,
+        'opacity-50 cursor-not-allowed pointer-events-none': mode === 'm-m' || mode === 'p-m'
+      }"
       (click)="moveStones(i, 2)"
     >
     <span 
@@ -49,7 +52,10 @@
   <ng-container *ngFor="let pit of player1Pits(); let i = index">
     <div
       class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 backdrop-blur-sm z-10"
-      [ngClass]="{'hover:scale-105 hover:border-red-800': pTurn === 1}"
+      [ngClass]="{
+        'hover:scale-105 hover:border-red-800': pTurn === 1,
+        'opacity-50 cursor-not-allowed pointer-events-none': mode === 'm-m'
+      }"
       (click)="moveStones(i, 1)"
     >
       <span 

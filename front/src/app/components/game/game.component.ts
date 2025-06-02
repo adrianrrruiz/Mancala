@@ -29,11 +29,12 @@ export class GameComponent {
     this.player2 = this.gameService.player2;
   }
 
-  get mode(): 'vs-player' | 'vs-machine' | 'machine-vs-machine' {
-    if (this.player1 && this.player2) return 'vs-player';
-    if (this.player1 && !this.player2) return 'vs-machine';
-    return 'machine-vs-machine';
+  get mode(): 'p-p' | 'p-m' | 'm-m' {
+    if ((this.player1 == 'greedy' || this.player1 == 'minimax') && (this.player2 == 'greedy' || this.player2 == 'minimax')) return 'm-m';
+    if (this.player2 == 'greedy' || this.player2 == 'minimax') return 'p-m';
+    return 'p-p';
   }
+
   reset(): void {
     console.log('Reiniciando juego');
     this.router.navigate(['']);

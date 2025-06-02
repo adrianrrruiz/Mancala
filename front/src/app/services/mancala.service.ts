@@ -34,10 +34,15 @@ export class MancalaService {
     );
   }
 
+  playGreedy(player: number): Observable<Board> {
+    return this.http.get<Board>(`${this.apiUrl}/ia-greedy?player=${player}`);
+  }
+
+  playMinimax(player: number): Observable<Board> {
+    return this.http.get<Board>(`${this.apiUrl}/ia-minimax?player=${player}`);
+  }
 
   getBoardState(): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-game`);
   }
-
-
 }

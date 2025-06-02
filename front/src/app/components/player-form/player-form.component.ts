@@ -18,48 +18,30 @@ export class PlayerFormComponent {
   player1 = '';
   player2 = '';
   private router = inject(Router);
- 
+
+  modeNumber = 0;
 
   constructor(private gameService: MancalaService) { }
 
   iniciarJuego() {
     if (this.mode === 'vs-player') {
-      this.gameService.startGame(this.player1, this.player2, 1).subscribe({
-
-        next: (data) => {
-          this.gameService.board = data;
-          console.log('Board:', data);
-
-          this.gameService.player1 = this.player1;
-          this.gameService.player2 = this.player2;
-          this.router.navigate(['/game']);
-
-        },
-        error: (err) => {
-          console.error('Error al iniciar juego', err);
-        }
-      });
-
+      this.modeNumber = 1;
     } else if (this.mode === 'vs-machine') {
-      this.player2 = "Computadora";
-      this.gameService.startGame(this.player1, this.player2, 2).subscribe({
-
-        next: (data) => {
-          this.gameService.board = data;
-          console.log('Board:', data);
-
-          this.gameService.player1 = this.player1;
-          this.gameService.player2 = this.player2;
-          this.router.navigate(['/game']);
-
-        },
-        error: (err) => {
-          console.error('Error al iniciar juego', err);
-        }
-      });
- 
+      this.modeNumber = 2;
     } else if (this.mode === 'machine-vs-machine') {
-      this.router.navigate(['/game']);
+      this.modeNumber = 3;
     }
+
+    this.gameService.startGame(this.player1, this.player2, this.modeNumber).subscribe({
+      next: (data) => {
+        this.gameService.board = data;
+        this.gameService.player1 = this.player1;
+        this.gameService.player2 = this.player2;
+        this.router.navigate(['/game']);
+      },
+      error: (err) => {
+        console.error('Error al iniciar juego', err);
+      }
+    });
   }
 }
