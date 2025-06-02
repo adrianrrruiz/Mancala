@@ -26,5 +26,16 @@ async def restart_game():
 @router.get("/movement")
 async def make_movement(row: int, col: int, player: int):
     board = game_service.make_movement(row, col, player)
-    
+    return board.dict() if board else {"message": "No se pudo realizar el movimiento"}
+
+@router.get("/ia-greedy")
+async def ia_play_greedy(player: int):
+    return {"message": "IA greedy en proceso"}
+    board = game_service.ia_play_greedy(player)
+    return board.dict() if board else {"message": "No se pudo realizar el movimiento"}
+
+@router.get("/ia-minimax")
+async def ia_play_minimax(player: int):
+    return {"message": "IA minimax en proceso"}
+    board = game_service.ia_play_minimax(player)
     return board.dict() if board else {"message": "No se pudo realizar el movimiento"}

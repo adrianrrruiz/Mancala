@@ -42,8 +42,6 @@ class GameService:
       rocks = board.pils[row][col]
       if rocks == 0:
           return board  # Movimiento inválido, pozo vacío
-
-      print(f"[DEBUG] Jugador {turn} movió desde ({row},{col}) con {rocks} piedras.")
       
       board.pils[row][col] = 0  # Vaciar el pit del jugador actual
       current_row, current_col = row, col
@@ -84,9 +82,6 @@ class GameService:
             rocks -= 1
             if rocks == 0:
                 last_pos = (0, current_col)
-
-      print(f"[DEBUG] Última semilla cayó en: {last_pos}")
-      print(f"[DEBUG] Estado actual del tablero: {board.pils}")
       
       # Aplicar regla de captura
       if isinstance(last_pos, tuple) and isinstance(last_pos[0], int):
@@ -133,7 +128,6 @@ class GameService:
               self.game.board.store2 += opposite + 1
               self.game.board.pils[1][col] = 0
               self.game.board.pils[0][col] = 0
-    
 
     def check_end_game(self) -> bool:
       # Sumar semillas restantes para ver si algún lado está vacío
@@ -157,6 +151,22 @@ class GameService:
           return True
       return False
 
-
+    def ia_play_greedy(self, player: int) -> Board:
+        board = self.game.board
+        if player == 1:
+            # Jugador 1
+            pass
+        else:
+            # Jugador 2
+            pass
+    
+    def ia_play_minimax(self, player: int) -> Board:
+        board = self.game.board
+        if player == 1:
+            # Jugador 1
+            pass
+        else:
+            # Jugador 2
+            pass
               
           
