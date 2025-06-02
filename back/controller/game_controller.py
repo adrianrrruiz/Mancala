@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from service.game_service import GameService
-from entity.game_start_request import GameStartRequest
+from entity.dtos.game_start_request import GameStartRequest
 
 router = APIRouter(
   prefix="/game"
