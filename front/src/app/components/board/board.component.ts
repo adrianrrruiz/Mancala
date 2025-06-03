@@ -119,8 +119,13 @@ export class BoardComponent {
     await new Promise(resolve => setTimeout(resolve, 3000)); // Esperar 3 segundos
     if (this.player2 === 'greedy') {
       this.gameService.playGreedy(2).subscribe({
-        next: (resp) => {
+        next: async (resp) => {
+          console.log(resp)
           this.setBoard(resp);
+          // Si sigue siendo el turno 2, vuelve a llamar playMachine (turno extra)
+          if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
+            await this.playMachine();
+          }
         }
       });
     } else {

@@ -1,7 +1,10 @@
+import copy
+import pprint
 from entity.game import Game
 from entity.player import Player
 from entity.board import Board
-import copy
+
+
 
 class GameService:
     _instance = None
@@ -25,7 +28,8 @@ class GameService:
             game_type=game_type,
             player1=p1,
             player2=p2,
-            board=board
+            board=board,
+            extra_turn = False
         )
         return self.game.board
     
@@ -94,6 +98,7 @@ class GameService:
 
       # Verificar turno extra
       if last_pos == ("store", turn):
+          self.game.extra_turn = True
           pass  # mismo jugador repite turno
       else:
           self.game.turn = 2 if turn == 1 else 1
@@ -154,106 +159,62 @@ class GameService:
 
     def ia_play_greedy(self, player: int) -> Board:
         board = self.game.board
-        if player == 0:
-            h = self.VorazMancala(board.pils, [board.store1, board.store2], fila=1, jugador=1)
-            if h != -1:
-                self.make_movement(1, h, 1)  # Jugador 1 juega en fila 1
-        else:
-            h = self.VorazMancala(board.pils, [board.store1, board.store2], fila=0, jugador=2)
-            if h != -1:
-                self.make_movement(0, h, 2)  # Jugador 2 juega en fila 0
-        return self.game.board
-
-
-    
-    def ia_play_minimax(self, player: int) -> Board:
-        board = self.game.board
-        if player == 0:
+        if player == 1:
             # Jugador 1
             pass
         else:
             # Jugador 2
+            return self.greedy()
             pass
-              
-          
-
-    def VorazMancala(self, P, S, fila, jugador):
-        """
-        Parámetros:
-        - P: matriz de hoyos (2D list o array)
-        - S: almacenes [store1, store2]
-        - fila: fila del jugador actual (1 para jugador 1, 0 para jugador 2)
-        - jugador: 1 o 2
-        """
-
-        posibles_movimientos = self.obtener_hoyos_validos(P, fila)
-        mejor_movimiento_actual = -1
-        movimientos_con_turno_extra = []
-        movimientos_con_captura = []
-
-        if not posibles_movimientos:
-            return -1
-
-        for h in posibles_movimientos:
-            P_sim, S_sim, es_turno_extra, semillas_capturadas_val = self.simular_movimiento_completo(
-                P, S, fila, jugador, h, self.game
-            )
+    
+    def ia_play_minimax(self, player: int) -> Board:
+        board = self.game.board
+        if player == 1:
+            # Jugador 1
+            pass
+        else:
+            # Jugador 2
+            # jugador, profundidad
+            #self.minimax(2, 3)
+            #self.minimax(3)
             
-            if es_turno_extra:
-                movimientos_con_turno_extra.append((h, P[fila][h]))
-            elif semillas_capturadas_val > 0:
-                movimientos_con_captura.append((h, semillas_capturadas_val))
-
-        if movimientos_con_turno_extra:
-            mejor_movimiento_actual = self.elegir_mejor_de_lista(movimientos_con_turno_extra, criterio="MAX_PUNTAJE")
-            return mejor_movimiento_actual[0]
-
-        if movimientos_con_captura:
-            mejor_movimiento_actual = self.elegir_mejor_de_lista(movimientos_con_captura, criterio="MAX_PUNTAJE")
-            return mejor_movimiento_actual[0]
-
-        mejor_puntaje_general = -1
-        for h in posibles_movimientos:
-            if P[fila][h] > mejor_puntaje_general:
-                mejor_puntaje_general = P[fila][h]
-                mejor_movimiento_actual = h
-
-        return mejor_movimiento_actual
-
-
-
-
-    def obtener_hoyos_validos(self, P, fila):
-        return [i for i, semillas in enumerate(P[fila]) if semillas > 0]
-
-    
-
-    def simular_movimiento_completo(self, P, S, fila, jugador, h, juego):
-        game_copy = copy.deepcopy(juego)
-
-        game_copy.board.pils = copy.deepcopy(P)
-        game_copy.board.store1, game_copy.board.store2 = S[0], S[1]
-        game_copy.turn = jugador
-        game_copy.playing = True
-
-        board_resultado = game_copy.make_movement(fila, h, jugador)
-
-        P_sim = board_resultado.pils
-        S_sim = [board_resultado.store1, board_resultado.store2]
-
-        es_turno_extra = (game_copy.turn == jugador)
-        semillas_capturadas_val = S_sim[jugador - 1] - S[jugador - 1]
-
-        return P_sim, S_sim, es_turno_extra, semillas_capturadas_val
-    
-    def elegir_mejor_de_lista(self, lista, criterio="MAX_PUNTAJE"):
-
-        if not lista:
-            return None
-
-        if criterio == "MAX_PUNTAJE":
-            return max(lista, key=lambda x: x[1])
+            #return self.make_movement(0, 2, 2)
+            pass
         
-        raise ValueError(f"Criterio no soportado: {criterio}")
+        
+    def greedy(self):
+        mejor_col_extra = None
+        mejor_col_puntos = None
+        max_puntos = -1
 
+        for col in range(6):
+            if self.game.board.pils[0][col] == 0:
+                continue
 
+            sim_self = copy.deepcopy(self)
+            sim_self.game.extra_turn = False
+            prev_store2 = sim_self.game.board.store2
+
+            sim_self.make_movement(0, col, 2)
+            puntos = sim_self.game.board.store2 - prev_store2
+            turno_extra = (sim_self.game.extra_turn)
+            
+            if turno_extra:
+                mejor_col_extra = col
+                print("Turno Extra:", col)
+                break  # Prioridad máxima, salimos del ciclo
+
+            if puntos > max_puntos:
+                print("Puntos: ", col)
+                max_puntos = puntos
+                mejor_col_puntos = col
+
+        if mejor_col_extra is not None:
+            self.game.board.turn = 2
+            return self.make_movement(0, mejor_col_extra, 2)
+        elif mejor_col_puntos is not None:
+            self.game.board.turn = 1
+            return self.make_movement(0, mejor_col_puntos, 2)
+        
+        
+        
