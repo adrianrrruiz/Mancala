@@ -86,12 +86,20 @@ export class BoardComponent {
         if (this.player1 === 'greedy') {
           this.gameService.playGreedy(1).subscribe({
             next: (resp) => {
+               if ('message' in resp) { // Mensaje de error
+                  alert(resp.message);
+                  return;
+                }
               this.setBoard(resp);
             }
           });
         } else {
           this.gameService.playMinimax(1).subscribe({
             next: (resp) => {
+               if ('message' in resp) { // Mensaje de error
+                  alert(resp.message);
+                  return;
+                }
               this.setBoard(resp);
             }
           });
@@ -100,12 +108,20 @@ export class BoardComponent {
         if (this.player2 === 'greedy') {
           this.gameService.playGreedy(2).subscribe({
             next: (resp) => {
+               if ('message' in resp) { // Mensaje de error
+                alert(resp.message);
+                return;
+              }
               this.setBoard(resp);
             }
           });
         } else {
           this.gameService.playMinimax(2).subscribe({
             next: (resp) => {
+               if ('message' in resp) { // Mensaje de error
+                  alert(resp.message);
+                  return;
+                }
               this.setBoard(resp);
             }
           });
@@ -121,6 +137,10 @@ export class BoardComponent {
       this.gameService.playGreedy(2).subscribe({
         next: async (resp) => {
           console.log(resp)
+           if ('message' in resp) { // Mensaje de error
+            alert(resp.message);
+            return;
+          }
           this.setBoard(resp);
           // Si sigue siendo el turno 2, vuelve a llamar playMachine (turno extra)
           if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
@@ -131,6 +151,10 @@ export class BoardComponent {
     } else {
       this.gameService.playMinimax(2).subscribe({
         next: (resp) => {
+           if ('message' in resp) { // Mensaje de error
+            alert(resp.message);
+            return;
+          }
           this.setBoard(resp);
         }
       });

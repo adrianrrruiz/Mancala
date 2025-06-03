@@ -9,7 +9,6 @@ class Game(BaseModel):
     player1: Player
     player2: Player
     board: Board
-    extra_turn: bool
       
     
   

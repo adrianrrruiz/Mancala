@@ -1,5 +1,3 @@
-import copy
-import pprint
 from entity.game import Game
 from entity.player import Player
 from entity.board import Board
@@ -27,8 +25,7 @@ class GameService:
             game_type=game_type,
             player1=p1,
             player2=p2,
-            board=board,
-            extra_turn = False
+            board=board
         )
         return self.game.board
     
@@ -38,11 +35,14 @@ class GameService:
     def restart_game(self):
       self.game = None
     
-    def make_movement(self, row, col, turn) -> Board:
-      if self.game is None or self.game.playing is False:
+    def make_movement(self, row, col, turn, game = None) -> Board:
+      if game is None:
+          game = self.game
+
+      if game is None or game.playing is False:
           return None
 
-      board = self.game.board
+      board = game.board
       rocks = board.pils[row][col]
       if rocks == 0:
           return board  # Movimiento inválido, pozo vacío
@@ -93,16 +93,15 @@ class GameService:
 
       # Verificar fin del juego
       if self.check_end_game():
-          return self.game.board
+          return game.board
 
       # Verificar turno extra
       if last_pos == ("store", turn):
-          self.game.extra_turn = True
           pass  # mismo jugador repite turno
       else:
-          self.game.turn = 2 if turn == 1 else 1
+          game.turn = 2 if turn == 1 else 1
 
-      board.turn = self.game.turn
+      board.turn = game.turn
       return board
     
     def _advance_position(self, row, col, turn):
@@ -117,50 +116,55 @@ class GameService:
               return ("store", 2) if turn == 2 else (1, 0)
           return (0, col)
 
-    def capture_rule(self, row, col, turn):
+    def capture_rule(self, row, col, turn,game = None):
+      if game is None:
+          game = self.game
       # Verifica si cayó en su lado y la casilla tenía solo 1 semilla (es decir, estaba vacía antes de caer ahí la última)
-      if turn == 1 and row == 1 and self.game.board.pils[row][col] == 1:
-          opposite = self.game.board.pils[0][col]
+      if turn == 1 and row == 1 and game.board.pils[row][col] == 1:
+          opposite = game.board.pils[0][col]
           if opposite > 0:
               # Suma la semilla propia + las del lado contrario
-              self.game.board.store1 += opposite + 1
-              self.game.board.pils[0][col] = 0
-              self.game.board.pils[1][col] = 0
+              game.board.store1 += opposite + 1
+              game.board.pils[0][col] = 0
+              game.board.pils[1][col] = 0
 
-      elif turn == 2 and row == 0 and self.game.board.pils[row][col] == 1:
-          opposite = self.game.board.pils[1][col]
+      elif turn == 2 and row == 0 and game.board.pils[row][col] == 1:
+          opposite = game.board.pils[1][col]
           if opposite > 0:
-              self.game.board.store2 += opposite + 1
-              self.game.board.pils[1][col] = 0
-              self.game.board.pils[0][col] = 0
+              game.board.store2 += opposite + 1
+              game.board.pils[1][col] = 0
+              game.board.pils[0][col] = 0
 
-    def check_end_game(self) -> bool:
+    def check_end_game(self, game = None) -> bool:
+      if game is None:
+          game = self.game
       # Sumar semillas restantes para ver si algún lado está vacío
-      side1_empty = all(p == 0 for p in self.game.board.pils[0]) # Arriba
-      side2_empty = all(p == 0 for p in self.game.board.pils[1]) # Abajo
+      side1_empty = all(p == 0 for p in game.board.pils[0]) # Arriba
+      side2_empty = all(p == 0 for p in game.board.pils[1]) # Abajo
 
       if side1_empty or side2_empty:
           # Si arriba vacío → sumar todo lo de abajo al store1
           if side1_empty:
-              self.game.board.store1 += sum(self.game.board.pils[1])
-              self.game.board.pils[1] = [0] * 6
+              game.board.store1 += sum(game.board.pils[1])
+              game.board.pils[1] = [0] * 6
 
           # Si abajo vacío → sumar todo lo de arriba al store2
           if side2_empty:
-              self.game.board.store2 += sum(self.game.board.pils[0])
-              self.game.board.pils[0] = [0] * 6
+              game.board.store2 += sum(game.board.pils[0])
+              game.board.pils[0] = [0] * 6
 
           # Finaliza el juego
-          self.game.playing = False
+          game.playing = False
             
           return True
       return False
 
     def ia_play_greedy(self, player: int) -> Board:
         board = self.game.board
-        if player == 1:
-            # Jugador 1
-            pass
+        if player == 0:
+            h = self.VorazMancala(board.pils, [board.store1, board.store2], fila=1, jugador=1)
+            if h != -1:
+                self.make_movement(1, h, 1)  # Jugador 1 juega en fila 1
         else:
             h = self.VorazMancala(board.pils, [board.store1, board.store2], fila=0, jugador=2)
             if h != -1:
@@ -171,7 +175,7 @@ class GameService:
     
     def ia_play_minimax(self, player: int) -> Board:
         board = self.game.board
-        if player == 1:
+        if player == 0:
             # Jugador 1
             pass
         else:
@@ -196,7 +200,7 @@ class GameService:
 
         if not posibles_movimientos:
             return -1
-
+        
         for h in posibles_movimientos:
             P_sim, S_sim, es_turno_extra, semillas_capturadas_val = self.simular_movimiento_completo(
                 P, S, fila, jugador, h, self.game
@@ -239,7 +243,7 @@ class GameService:
         game_copy.turn = jugador
         game_copy.playing = True
 
-        board_resultado = game_copy.make_movement(fila, h, jugador)
+        board_resultado = self.make_movement(fila, h, jugador, game_copy)
 
         P_sim = board_resultado.pils
         S_sim = [board_resultado.store1, board_resultado.store2]
