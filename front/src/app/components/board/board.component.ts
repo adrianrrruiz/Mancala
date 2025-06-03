@@ -95,6 +95,9 @@ export class BoardComponent {
                   this.endGame(resp);
                 }
               this.setBoard(resp);
+              if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
+                await this.playMvsM();
+              }
             }
           });
         } else {
@@ -109,6 +112,9 @@ export class BoardComponent {
                   this.endGame(resp);
                 }
               this.setBoard(resp);
+              if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
+                await this.playMvsM();
+              }
             }
           });
         }
@@ -125,6 +131,9 @@ export class BoardComponent {
                 this.endGame(resp);
               }
               this.setBoard(resp);
+              if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
+                await this.playMvsM();
+              }
             }
           });
         } else {
@@ -139,6 +148,9 @@ export class BoardComponent {
                   this.endGame(resp);
                 }
               this.setBoard(resp);
+              if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
+                await this.playMvsM();
+              }
             }
           });
         }
@@ -169,7 +181,8 @@ export class BoardComponent {
       });
     } else {
       this.gameService.playMinimax(2).subscribe({
-        next: (resp) => {
+        next: async (resp) => {
+          console.log(resp)
            if ('message' in resp) { // Mensaje de error
             alert(resp.message);
             return;
@@ -178,6 +191,10 @@ export class BoardComponent {
             this.endGame(resp);
           }
           this.setBoard(resp);
+          // Si sigue siendo el turno 2, vuelve a llamar playMachine (turno extra)
+          if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
+            await this.playMachine();
+          }
         }
       });
     }

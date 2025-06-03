@@ -41,11 +41,12 @@ export class MancalaService {
     );
   }
 
-  
-
-  playMinimax(player: number): Observable<Board> {
-    return this.http.get<Board>(`${this.apiUrl}/ia-minimax?player=${player}`);
+  playMinimax(player: number): Observable<Board | { message: string }> {
+    return this.http.get<Board | { message: string }>(
+      `${this.apiUrl}/ia-minimax?player=${player}`
+    );
   }
+
 
   getBoardState(): Observable<any> {
     return this.http.get(`${this.apiUrl}/get-game`);

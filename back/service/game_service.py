@@ -1,7 +1,9 @@
 from entity.game import Game
 from entity.player import Player
 from entity.board import Board
+import math
 import copy
+
 
 class GameService:
     _instance = None
@@ -172,19 +174,35 @@ class GameService:
             if h != -1:
                 self.make_movement(0, h, 2)  # Jugador 2 juega en fila 0
         return self.game.board
+    
+
 
 
     
     def ia_play_minimax(self, player: int) -> Board:
         board = self.game.board
-        if player == 0:
-            # Jugador 1
-            pass
+        P = board.pils
+        S = [board.store1, board.store2]
+        profundidad = 5  
+
+        if player == 1:
+            fila = 1
+            j_actual = 1
         else:
-            # Jugador 2
-            pass
+            fila = 0
+            j_actual = 2
+
+        # Llamada a Minimax
+        mejor_hoyo = self.decision_minimax(P, S, j_actual, profundidad, self.game)
+
+        if mejor_hoyo != -1:
+            self.make_movement(fila, mejor_hoyo, j_actual)
+
+        return self.game.board
+
               
-          
+    # ----------------------------------- Funciones del algoritmo Greedy -------------------------------------------------------------------------------
+      
 
     def VorazMancala(self, P, S, fila, jugador):
         """
@@ -230,7 +248,15 @@ class GameService:
         return mejor_movimiento_actual
 
 
+    def elegir_mejor_de_lista(self, lista, criterio="MAX_PUNTAJE"):
 
+        if not lista:
+            return None
+
+        if criterio == "MAX_PUNTAJE":
+            return max(lista, key=lambda x: x[1])
+        
+        raise ValueError(f"Criterio no soportado: {criterio}")    
 
     def obtener_hoyos_validos(self, P, fila):
         return [i for i, semillas in enumerate(P[fila]) if semillas > 0]
@@ -255,14 +281,109 @@ class GameService:
 
         return P_sim, S_sim, es_turno_extra, semillas_capturadas_val
     
-    def elegir_mejor_de_lista(self, lista, criterio="MAX_PUNTAJE"):
 
-        if not lista:
-            return None
+    
+# ----------------------------------- Funciones del algoritmo  Minimax -------------------------------------------------------------------------------
 
-        if criterio == "MAX_PUNTAJE":
-            return max(lista, key=lambda x: x[1])
+
+    def esta_vacia(self, lista):
+        return len(lista) == 0
+
+    def oponente(self, jugador):
+        return 2 if jugador == 1 else 1
+
+    def es_fin_de_juego(self, P, jugador):
+        fila = 1 if jugador == 1 else 0
+        return all(p == 0 for p in P[fila])
+
+    def funcion_evaluacion_estado(self, P, S, jugador_eval):
+        return S[jugador_eval - 1] - S[self.oponente(jugador_eval) - 1]
+
+    def decision_minimax(self, P, S, j_actual, profundidad_max, juego):
+        fila = 1 if j_actual == 1 else 0
+        posibles_movimientos = self.obtener_hoyos_validos(P, fila)
         
-        raise ValueError(f"Criterio no soportado: {criterio}")
+        if self.esta_vacia(posibles_movimientos):
+            return -1
+
+        mejor_hoyo_encontrado = -1
+        max_valor_evaluado = -math.inf
+        alfa = -math.inf
+        beta = math.inf
+
+        for h in posibles_movimientos:
+            P_siguiente, S_siguiente, es_turno_extra, _ = self.simular_movimiento_completo(P, S, fila, j_actual, h, juego)
+
+            if es_turno_extra:
+                valor_movimiento_actual = self.valor_max(P_siguiente, S_siguiente, j_actual, profundidad_max - 1, alfa, beta, j_actual, juego)
+            else:
+                j_oponente = self.oponente(j_actual)
+                valor_movimiento_actual = self.valor_min(P_siguiente, S_siguiente, j_oponente, profundidad_max - 1, alfa, beta, j_actual, juego)
+
+            if valor_movimiento_actual > max_valor_evaluado:
+                max_valor_evaluado = valor_movimiento_actual
+                mejor_hoyo_encontrado = h
+
+            alfa = max(alfa, max_valor_evaluado)
+
+        return mejor_hoyo_encontrado
 
 
+    def valor_max(self, P_estado, S_estado, j_turno_max, profundidad, alfa, beta, j_perspectiva_eval, juego):
+        if profundidad == 0 or self.es_fin_de_juego(P_estado, j_turno_max):
+            return self.funcion_evaluacion_estado(P_estado, S_estado, j_perspectiva_eval)
+
+        fila = 1 if j_turno_max == 1 else 0
+        posibles_movimientos = self.obtener_hoyos_validos(P_estado, fila)
+
+        if self.esta_vacia(posibles_movimientos):
+            return self.funcion_evaluacion_estado(P_estado, S_estado, j_perspectiva_eval)
+
+        valor_max = -math.inf
+
+        for h in posibles_movimientos:
+            P_siguiente, S_siguiente, es_turno_extra, _ = self.simular_movimiento_completo(P_estado, S_estado, fila, j_turno_max, h, juego)
+
+            if es_turno_extra:
+                eval_actual = self.valor_max(P_siguiente, S_siguiente, j_turno_max, profundidad - 1, alfa, beta, j_perspectiva_eval, juego)
+            else:
+                j_oponente = self.oponente(j_turno_max)
+                eval_actual = self.valor_min(P_siguiente, S_siguiente, j_oponente, profundidad - 1, alfa, beta, j_perspectiva_eval, juego)
+
+            valor_max = max(valor_max, eval_actual)
+            alfa = max(alfa, valor_max)
+
+            if beta <= alfa:
+                break  # Poda Beta
+
+        return valor_max
+
+
+    def valor_min(self, P_estado, S_estado, j_turno_min, profundidad, alfa, beta, j_perspectiva_eval, juego):
+        if profundidad == 0 or self.es_fin_de_juego(P_estado, j_turno_min):
+            return self.funcion_evaluacion_estado(P_estado, S_estado, j_perspectiva_eval)
+
+        fila = 1 if j_turno_min == 1 else 0
+        posibles_movimientos = self.obtener_hoyos_validos(P_estado, fila)
+
+        if self.esta_vacia(posibles_movimientos):
+            return self.funcion_evaluacion_estado(P_estado, S_estado, j_perspectiva_eval)
+
+        valor_min = math.inf
+
+        for h in posibles_movimientos:
+            P_siguiente, S_siguiente, es_turno_extra, _ = self.simular_movimiento_completo(P_estado, S_estado, fila, j_turno_min, h, juego)
+
+            if es_turno_extra:
+                eval_actual = self.valor_min(P_siguiente, S_siguiente, j_turno_min, profundidad - 1, alfa, beta, j_perspectiva_eval, juego)
+            else:
+                j_oponente = self.oponente(j_turno_min)
+                eval_actual = self.valor_max(P_siguiente, S_siguiente, j_oponente, profundidad - 1, alfa, beta, j_perspectiva_eval, juego)
+
+            valor_min = min(valor_min, eval_actual)
+            beta = min(beta, valor_min)
+
+            if beta <= alfa:
+                break  # Poda Alfa
+
+        return valor_min

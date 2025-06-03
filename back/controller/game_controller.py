@@ -36,6 +36,6 @@ async def ia_play_greedy(player: int):
 
 @router.get("/ia-minimax")
 async def ia_play_minimax(player: int):
-    return {"message": "IA minimax en proceso"}
+    #return {"message": "IA minimax en proceso"}
     board = game_service.ia_play_minimax(player)
     return board.dict() if board else {"message": "No se pudo realizar el movimiento"}
