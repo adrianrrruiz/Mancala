@@ -81,7 +81,7 @@ export class BoardComponent {
 
   async playMvsM(): Promise<void> {
     while (this.board.store1 + this.board.store2 < 48) {
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Esperar 5 segundos
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 5 segundos
       if (this.pTurn === 1) {
         if (this.player1 === 'greedy') {
           this.gameService.playGreedy(1).subscribe({
@@ -95,8 +95,11 @@ export class BoardComponent {
                   this.endGame(resp);
                 }
               this.setBoard(resp);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
               if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
                 await this.playMvsM();
+
               }
             }
           });
@@ -112,6 +115,8 @@ export class BoardComponent {
                   this.endGame(resp);
                 }
               this.setBoard(resp);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
               if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
                 await this.playMvsM();
               }
@@ -131,6 +136,8 @@ export class BoardComponent {
                 this.endGame(resp);
               }
               this.setBoard(resp);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
               if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
                 await this.playMvsM();
               }
@@ -148,6 +155,8 @@ export class BoardComponent {
                   this.endGame(resp);
                 }
               this.setBoard(resp);
+              await new Promise(resolve => setTimeout(resolve, 2000));
+
               if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
                 await this.playMvsM();
               }
@@ -160,7 +169,7 @@ export class BoardComponent {
   }
 
   async playMachine(): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 3000)); // Esperar 3 segundos
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 3 segundos
     if (this.player2 === 'greedy') {
       this.gameService.playGreedy(2).subscribe({
         next: async (resp) => {
@@ -173,6 +182,8 @@ export class BoardComponent {
             this.endGame(resp);
           }
           this.setBoard(resp);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
           // Si sigue siendo el turno 2, vuelve a llamar playMachine (turno extra)
           if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
             await this.playMachine();
@@ -191,6 +202,8 @@ export class BoardComponent {
             this.endGame(resp);
           }
           this.setBoard(resp);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+
           // Si sigue siendo el turno 2, vuelve a llamar playMachine (turno extra)
           if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
             await this.playMachine();
