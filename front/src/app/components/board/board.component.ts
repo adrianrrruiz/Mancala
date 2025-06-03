@@ -90,7 +90,10 @@ export class BoardComponent {
                   alert(resp.message);
                   return;
                 }
-              this.setBoard(resp);
+                 if (resp.store1 + resp.store2 == 48) {
+                  this.endGame(resp);
+                }
+                this.setBoard(resp);
             }
           });
         } else {
@@ -99,6 +102,9 @@ export class BoardComponent {
                if ('message' in resp) { // Mensaje de error
                   alert(resp.message);
                   return;
+                }
+                 if (resp.store1 + resp.store2 == 48) {
+                  this.endGame(resp);
                 }
               this.setBoard(resp);
             }
@@ -112,6 +118,9 @@ export class BoardComponent {
                 alert(resp.message);
                 return;
               }
+               if (resp.store1 + resp.store2 == 48) {
+                this.endGame(resp);
+              }
               this.setBoard(resp);
             }
           });
@@ -121,6 +130,9 @@ export class BoardComponent {
                if ('message' in resp) { // Mensaje de error
                   alert(resp.message);
                   return;
+                }
+                if (resp.store1 + resp.store2 == 48) {
+                  this.endGame(resp);
                 }
               this.setBoard(resp);
             }
@@ -141,6 +153,9 @@ export class BoardComponent {
             alert(resp.message);
             return;
           }
+          if (resp.store1 + resp.store2 == 48) {
+            this.endGame(resp);
+          }
           this.setBoard(resp);
           // Si sigue siendo el turno 2, vuelve a llamar playMachine (turno extra)
           if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
@@ -154,6 +169,9 @@ export class BoardComponent {
            if ('message' in resp) { // Mensaje de error
             alert(resp.message);
             return;
+          }
+           if (resp.store1 + resp.store2 == 48) {
+            this.endGame(resp);
           }
           this.setBoard(resp);
         }
