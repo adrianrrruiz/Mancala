@@ -85,20 +85,22 @@ export class BoardComponent {
       if (this.pTurn === 1) {
         if (this.player1 === 'greedy') {
           this.gameService.playGreedy(1).subscribe({
-            next: (resp) => {
+            next: async (resp) => {
+              console.log(resp)
                if ('message' in resp) { // Mensaje de error
                   alert(resp.message);
                   return;
                 }
-                 if (resp.store1 + resp.store2 == 48) {
+              if (resp.store1 + resp.store2 == 48) {
                   this.endGame(resp);
                 }
-                this.setBoard(resp);
+              this.setBoard(resp);
             }
           });
         } else {
           this.gameService.playMinimax(1).subscribe({
-            next: (resp) => {
+            next: async(resp) => {
+              console.log(resp)
                if ('message' in resp) { // Mensaje de error
                   alert(resp.message);
                   return;
@@ -113,12 +115,13 @@ export class BoardComponent {
       } else {
         if (this.player2 === 'greedy') {
           this.gameService.playGreedy(2).subscribe({
-            next: (resp) => {
+            next: async (resp) => {
+              console.log(resp)
                if ('message' in resp) { // Mensaje de error
                 alert(resp.message);
                 return;
               }
-               if (resp.store1 + resp.store2 == 48) {
+              if (resp.store1 + resp.store2 == 48) {
                 this.endGame(resp);
               }
               this.setBoard(resp);
@@ -126,7 +129,8 @@ export class BoardComponent {
           });
         } else {
           this.gameService.playMinimax(2).subscribe({
-            next: (resp) => {
+            next: async (resp) => {
+              console.log(resp)
                if ('message' in resp) { // Mensaje de error
                   alert(resp.message);
                   return;

@@ -35,74 +35,75 @@ class GameService:
     def restart_game(self):
       self.game = None
     
-    def make_movement(self, row, col, turn, game = None) -> Board:
-      if game is None:
-          game = self.game
+    def make_movement(self, row, col, turn, game=None) -> Board:
+        if game is None:
+            game = self.game
+        if not game or not game.playing:
+            return None
 
-      if game is None or game.playing is False:
-          return None
+        board = game.board
+        rocks = board.pils[row][col]
+        if rocks == 0:
+            return board
 
-      board = game.board
-      rocks = board.pils[row][col]
-      if rocks == 0:
-          return board  # Movimiento inválido, pozo vacío
-      
-      board.pils[row][col] = 0  # Vaciar el pit del jugador actual
-      current_row, current_col = row, col
-      last_pos = None
+        board.pils[row][col] = 0
+        current_row, current_col = row, col
+        last_pos = None
 
-      while rocks > 0:
-        # Movimiento antihorario
-        if current_row == 1:  # fila jugador 1 (abajo → derecha)
-            if current_col < 5:
-                current_col += 1
-            else:
-                if turn == 1:
-                    board.store1 += 1
-                    rocks -= 1
-                    if rocks == 0:
-                        last_pos = ("store", 1)
-                current_row = 0
-                current_col = 6
-                continue  # saltar si no se sembró
-            board.pils[1][current_col] += 1
-            rocks -= 1
-            if rocks == 0:
-                last_pos = (1, current_col)
+        while rocks > 0:
+            if current_row == 1:  # jugador 1
+                if current_col < 5:
+                    current_col += 1
+                else:
+                    if turn == 1:
+                        board.store1 += 1
+                        rocks -= 1
+                        if rocks == 0:
+                            last_pos = ("store", 1)
+                    current_row = 0
+                    current_col = 6
+                    continue
+                previous = board.pils[1][current_col]
+                board.pils[1][current_col] += 1
+                rocks -= 1
+                if rocks == 0:
+                    last_pos = (1, current_col, previous)
 
-        else:  # fila jugador 2 (arriba → izquierda)
-            if current_col > 0:
-                current_col -= 1
-            else:
-                if turn == 2:
-                    board.store2 += 1
-                    rocks -= 1
-                    if rocks == 0:
-                        last_pos = ("store", 2)
-                current_row = 1
-                current_col = -1
-                continue  # saltar si no se sembró
-            board.pils[0][current_col] += 1
-            rocks -= 1
-            if rocks == 0:
-                last_pos = (0, current_col)
-      
-      # Aplicar regla de captura
-      if isinstance(last_pos, tuple) and isinstance(last_pos[0], int):
-          self.capture_rule(*last_pos, turn)
+            else:  # jugador 2
+                if current_col > 0:
+                    current_col -= 1
+                else:
+                    if turn == 2:
+                        board.store2 += 1
+                        rocks -= 1
+                        if rocks == 0:
+                            last_pos = ("store", 2)
+                    current_row = 1
+                    current_col = -1
+                    continue
+                previous = board.pils[0][current_col]
+                board.pils[0][current_col] += 1
+                rocks -= 1
+                if rocks == 0:
+                    last_pos = (0, current_col, previous)
 
-      # Verificar fin del juego
-      if self.check_end_game():
-          return game.board
+        # Aplicar captura solo si última semilla cayó en pozo
+        if isinstance(last_pos, tuple) and len(last_pos) == 3:
+            self.capture_rule(last_pos[0], last_pos[1], turn, last_pos[2])
 
-      # Verificar turno extra
-      if last_pos == ("store", turn):
-          pass  # mismo jugador repite turno
-      else:
-          game.turn = 2 if turn == 1 else 1
+        # Verificar fin de juego
+        if self.check_end_game():
+            return game.board
 
-      board.turn = game.turn
-      return board
+        # Turno extra
+        if last_pos == ("store", turn):
+            pass
+        else:
+            game.turn = 2 if turn == 1 else 1
+
+        board.turn = game.turn
+        return board
+
     
     def _advance_position(self, row, col, turn):
       if row == 1:
@@ -116,24 +117,25 @@ class GameService:
               return ("store", 2) if turn == 2 else (1, 0)
           return (0, col)
 
-    def capture_rule(self, row, col, turn,game = None):
-      if game is None:
-          game = self.game
-      # Verifica si cayó en su lado y la casilla tenía solo 1 semilla (es decir, estaba vacía antes de caer ahí la última)
-      if turn == 1 and row == 1 and game.board.pils[row][col] == 1:
-          opposite = game.board.pils[0][col]
-          if opposite > 0:
-              # Suma la semilla propia + las del lado contrario
-              game.board.store1 += opposite + 1
-              game.board.pils[0][col] = 0
-              game.board.pils[1][col] = 0
+    def capture_rule(self, row, col, turn, previous_count, game=None):
+        if game is None:
+            game = self.game
 
-      elif turn == 2 and row == 0 and game.board.pils[row][col] == 1:
-          opposite = game.board.pils[1][col]
-          if opposite > 0:
-              game.board.store2 += opposite + 1
-              game.board.pils[1][col] = 0
-              game.board.pils[0][col] = 0
+        # Verifica que cayó en su propio lado y la casilla estaba vacía
+        if turn == 1 and row == 1 and game.board.pils[row][col] == 1 and previous_count == 0:
+            opposite = game.board.pils[0][col]
+            if opposite > 0:
+                game.board.store1 += opposite + 1
+                game.board.pils[0][col] = 0
+                game.board.pils[1][col] = 0
+
+        elif turn == 2 and row == 0 and game.board.pils[row][col] == 1 and previous_count == 0:
+            opposite = game.board.pils[1][col]
+            if opposite > 0:
+                game.board.store2 += opposite + 1
+                game.board.pils[1][col] = 0
+                game.board.pils[0][col] = 0
+
 
     def check_end_game(self, game = None) -> bool:
       if game is None:
@@ -161,7 +163,7 @@ class GameService:
 
     def ia_play_greedy(self, player: int) -> Board:
         board = self.game.board
-        if player == 0:
+        if player == 1:
             h = self.VorazMancala(board.pils, [board.store1, board.store2], fila=1, jugador=1)
             if h != -1:
                 self.make_movement(1, h, 1)  # Jugador 1 juega en fila 1
