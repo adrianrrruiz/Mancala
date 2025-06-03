@@ -30,7 +30,7 @@ async def make_movement(row: int, col: int, player: int):
 
 @router.get("/ia-greedy")
 async def ia_play_greedy(player: int):
-    return {"message": "IA greedy en proceso"}
+    #return {"message": "IA greedy en proceso"}
     board = game_service.ia_play_greedy(player)
     return board.dict() if board else {"message": "No se pudo realizar el movimiento"}
 
