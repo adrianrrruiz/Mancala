@@ -181,7 +181,7 @@ class GameService:
         board = self.game.board
         P = board.pils
         S = [board.store1, board.store2]
-        profundidad = 5  # o el valor que quieras usar
+        profundidad = 2  # o el valor que quieras usar
 
         if player == 1:
             fila = 1
