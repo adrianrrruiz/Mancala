@@ -30,6 +30,7 @@ export class BoardComponent {
   player1Pits = signal<number[]>(Array(6).fill(2));
   player2Pits = signal<number[]>(Array(6).fill(0));
   stores = signal<number[]>([0, 0]);
+  selectedPit = signal<{ row: number, col: number } | null>(null);
 
   movePit: number = 1;
 
@@ -87,13 +88,13 @@ export class BoardComponent {
           this.gameService.playGreedy(1).subscribe({
             next: async (resp) => {
               console.log(resp)
-               if ('message' in resp) { // Mensaje de error
-                  alert(resp.message);
-                  return;
-                }
+              if ('message' in resp) { // Mensaje de error
+                alert(resp.message);
+                return;
+              }
               if (resp.store1 + resp.store2 == 48) {
-                  this.endGame(resp);
-                }
+                this.endGame(resp);
+              }
               this.setBoard(resp);
               await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -105,15 +106,15 @@ export class BoardComponent {
           });
         } else {
           this.gameService.playMinimax(1).subscribe({
-            next: async(resp) => {
+            next: async (resp) => {
               console.log(resp)
-               if ('message' in resp) { // Mensaje de error
-                  alert(resp.message);
-                  return;
-                }
-                 if (resp.store1 + resp.store2 == 48) {
-                  this.endGame(resp);
-                }
+              if ('message' in resp) { // Mensaje de error
+                alert(resp.message);
+                return;
+              }
+              if (resp.store1 + resp.store2 == 48) {
+                this.endGame(resp);
+              }
               this.setBoard(resp);
               await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -128,7 +129,7 @@ export class BoardComponent {
           this.gameService.playGreedy(2).subscribe({
             next: async (resp) => {
               console.log(resp)
-               if ('message' in resp) { // Mensaje de error
+              if ('message' in resp) { // Mensaje de error
                 alert(resp.message);
                 return;
               }
@@ -147,13 +148,13 @@ export class BoardComponent {
           this.gameService.playMinimax(2).subscribe({
             next: async (resp) => {
               console.log(resp)
-               if ('message' in resp) { // Mensaje de error
-                  alert(resp.message);
-                  return;
-                }
-                if (resp.store1 + resp.store2 == 48) {
-                  this.endGame(resp);
-                }
+              if ('message' in resp) { // Mensaje de error
+                alert(resp.message);
+                return;
+              }
+              if (resp.store1 + resp.store2 == 48) {
+                this.endGame(resp);
+              }
               this.setBoard(resp);
               await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -174,7 +175,7 @@ export class BoardComponent {
       this.gameService.playGreedy(2).subscribe({
         next: async (resp) => {
           console.log(resp)
-           if ('message' in resp) { // Mensaje de error
+          if ('message' in resp) { // Mensaje de error
             alert(resp.message);
             return;
           }
@@ -194,11 +195,11 @@ export class BoardComponent {
       this.gameService.playMinimax(2).subscribe({
         next: async (resp) => {
           console.log(resp)
-           if ('message' in resp) { // Mensaje de error
+          if ('message' in resp) { // Mensaje de error
             alert(resp.message);
             return;
           }
-           if (resp.store1 + resp.store2 == 48) {
+          if (resp.store1 + resp.store2 == 48) {
             this.endGame(resp);
           }
           this.setBoard(resp);
@@ -229,6 +230,35 @@ export class BoardComponent {
   }
 
   setBoard(board: Board): void {
+    // Detectar qué casilla seleccionó la máquina
+    if (this.mode === 'm-m' || (this.mode === 'p-m' && this.pTurn === 2)) {
+      const oldPits1 = [...this.player1Pits()];
+      const oldPits2 = [...this.player2Pits()];
+      const newPits1 = [...board.pils[1]];
+      const newPits2 = [...board.pils[0]];
+
+      // Buscar en las casillas del jugador 1
+      for (let i = 0; i < 6; i++) {
+        if (oldPits1[i] > 0 && newPits1[i] === 0) {
+          this.selectedPit.set({ row: 1, col: i });
+          break;
+        }
+      }
+
+      // Buscar en las casillas del jugador 2
+      for (let i = 0; i < 6; i++) {
+        if (oldPits2[i] > 0 && newPits2[i] === 0) {
+          this.selectedPit.set({ row: 2, col: i });
+          break;
+        }
+      }
+
+      // Limpiar la selección después de 1 segundo
+      setTimeout(() => {
+        this.selectedPit.set(null);
+      }, 1000);
+    }
+
     this.board = structuredClone(board);
     this.player1Pits.set([...board.pils[1]]);
     this.player2Pits.set([...board.pils[0]]);

@@ -32,7 +32,8 @@
       class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 backdrop-blur-sm z-10"
       [ngClass]="{
         'hover:scale-105 hover:border-blue-800': pTurn !== 1,
-        'opacity-50 cursor-not-allowed pointer-events-none': mode === 'm-m' || mode === 'p-m'
+        'opacity-50 cursor-not-allowed pointer-events-none': mode === 'm-m' || mode === 'p-m',
+        'animate-pulse ring-4 ring-yellow-500': selectedPit()?.row === 2 && selectedPit()?.col === i
       }"
       (click)="moveStones(i, 2)"
     >
@@ -54,7 +55,8 @@
       class="flex items-center justify-center bg-transparent border-4 border-amber-950/80 rounded-full w-34 h-34 cursor-pointer self-center justify-self-center relative group transition-all duration-300 backdrop-blur-sm z-10"
       [ngClass]="{
         'hover:scale-105 hover:border-red-800': pTurn === 1,
-        'opacity-50 cursor-not-allowed pointer-events-none': mode === 'm-m'
+        'opacity-50 cursor-not-allowed pointer-events-none': mode === 'm-m',
+        'animate-pulse ring-4 ring-yellow-500': selectedPit()?.row === 1 && selectedPit()?.col === i
       }"
       (click)="moveStones(i, 1)"
     >
