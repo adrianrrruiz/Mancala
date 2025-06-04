@@ -37,7 +37,7 @@ class GameService:
     def restart_game(self):
       self.game = None
     
-    def make_movement(self, row, col, turn, game=None) -> Board:
+    def make_movement(self, row, col, turn, game=None, check_end=True) -> Board:
         if game is None:
             game = self.game
         if not game or not game.playing:
@@ -91,10 +91,10 @@ class GameService:
 
         # Aplicar captura solo si última semilla cayó en pozo
         if isinstance(last_pos, tuple) and len(last_pos) == 3:
-            self.capture_rule(last_pos[0], last_pos[1], turn, last_pos[2])
+            self.capture_rule(last_pos[0], last_pos[1], turn, last_pos[2], game)
 
         # Verificar fin de juego
-        if self.check_end_game():
+        if check_end and self.check_end_game(game):
             return game.board
 
         # Turno extra
@@ -181,7 +181,7 @@ class GameService:
         board = self.game.board
         P = board.pils
         S = [board.store1, board.store2]
-        profundidad = 5  # o el valor que quieras usar
+        profundidad = 2  # o el valor que quieras usar
 
         if player == 1:
             fila = 1
@@ -269,7 +269,7 @@ class GameService:
         game_copy.turn = jugador
         game_copy.playing = True
 
-        board_resultado = self.make_movement(fila, h, jugador, game_copy)
+        board_resultado = self.make_movement(fila, h, jugador, game_copy, check_end=False)
 
         P_sim = board_resultado.pils
         S_sim = [board_resultado.store1, board_resultado.store2]
