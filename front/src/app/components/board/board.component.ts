@@ -82,92 +82,42 @@ export class BoardComponent {
 
   async playMvsM(): Promise<void> {
     while (this.board.store1 + this.board.store2 < 48) {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 5 segundos
-      if (this.pTurn === 1) {
-        if (this.player1 === 'greedy') {
-          this.gameService.playGreedy(1).subscribe({
-            next: async (resp) => {
-              console.log(resp)
-              if ('message' in resp) { // Mensaje de error
-                alert(resp.message);
-                return;
-              }
-              if (resp.store1 + resp.store2 == 48) {
-                this.endGame(resp);
-              }
-              this.setBoard(resp);
-              await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Delay para visualización
 
-              if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
-                await this.playMvsM();
+      const currentPlayer = this.pTurn;
+      const isGreedy = (currentPlayer === 1 ? this.player1 : this.player2) === 'greedy';
+      const playFn = isGreedy ? this.gameService.playGreedy : this.gameService.playMinimax;
 
-              }
+      const response = await new Promise<Board>((resolve, reject) => {
+        playFn.call(this.gameService, currentPlayer).subscribe({
+          next: (resp) => {
+            if ('message' in resp) {
+              alert(resp.message);
+              reject(resp.message);
+            } else {
+              resolve(resp);
             }
-          });
-        } else {
-          this.gameService.playMinimax(1).subscribe({
-            next: async (resp) => {
-              console.log(resp)
-              if ('message' in resp) { // Mensaje de error
-                alert(resp.message);
-                return;
-              }
-              if (resp.store1 + resp.store2 == 48) {
-                this.endGame(resp);
-              }
-              this.setBoard(resp);
-              await new Promise(resolve => setTimeout(resolve, 2000));
+          },
+          error: (err) => {
+            console.error('Error al mover IA:', err);
+            alert('Error al procesar movimiento IA.');
+            reject(err);
+          }
+        });
+      });
 
-              if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
-                await this.playMvsM();
-              }
-            }
-          });
-        }
-      } else {
-        if (this.player2 === 'greedy') {
-          this.gameService.playGreedy(2).subscribe({
-            next: async (resp) => {
-              console.log(resp)
-              if ('message' in resp) { // Mensaje de error
-                alert(resp.message);
-                return;
-              }
-              if (resp.store1 + resp.store2 == 48) {
-                this.endGame(resp);
-              }
-              this.setBoard(resp);
-              await new Promise(resolve => setTimeout(resolve, 2000));
+      this.setBoard(response);
 
-              if (resp.turn === 2 && resp.store1 + resp.store2 < 48) {
-                await this.playMvsM();
-              }
-            }
-          });
-        } else {
-          this.gameService.playMinimax(2).subscribe({
-            next: async (resp) => {
-              console.log(resp)
-              if ('message' in resp) { // Mensaje de error
-                alert(resp.message);
-                return;
-              }
-              if (resp.store1 + resp.store2 == 48) {
-                this.endGame(resp);
-              }
-              this.setBoard(resp);
-              await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Delay tras pintar
 
-              if (resp.turn === 1 && resp.store1 + resp.store2 < 48) {
-                await this.playMvsM();
-              }
-            }
-          });
-        }
-      }
+     
+      // Si NO hubo turno extra, se cambia el turno automáticamente desde setBoard()
+      // (porque actualizas this.pTurn allí).
+      // Si hubo turno extra, simplemente no se cambia, y el bucle continúa con el mismo jugador.
     }
     this.endGame(this.board);
   }
+
 
   async playMachine(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 2000)); // Esperar 3 segundos
