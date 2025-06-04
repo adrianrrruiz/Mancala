@@ -176,14 +176,12 @@ class GameService:
         return self.game.board
     
 
-
-
     
     def ia_play_minimax(self, player: int) -> Board:
         board = self.game.board
         P = board.pils
         S = [board.store1, board.store2]
-        profundidad = 5  
+        profundidad = 5  # o el valor que quieras usar
 
         if player == 1:
             fila = 1
